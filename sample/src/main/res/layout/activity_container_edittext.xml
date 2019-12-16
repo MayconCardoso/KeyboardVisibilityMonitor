@@ -5,11 +5,28 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:padding="24dp">
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:id="@+id/tvStatus"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="Waiting first state of keyboard"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:id="@+id/tvSize"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text=""/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Text"
+        android:layout_marginTop="32dp"
         android:inputType="text"/>
 
     <EditText

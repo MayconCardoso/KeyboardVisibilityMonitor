@@ -4,32 +4,41 @@ import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.view.Gravity
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.PopupWindow
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 /**
  * @author MAYCON CARDOSO on 2019-12-16.
  */
 class KeyboardVisibilityMonitor(
     lifecycleOwner: LifecycleOwner,
-    private val activity : FragmentActivity,
-    private val onChangeCallback : (change : KeyboardChange) -> Unit
+    private val activity: FragmentActivity,
+    private val keyboardObservableSettings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    private val onChangeCallback: (change: KeyboardChange) -> Unit
 ) : PopupWindow(activity), LifecycleObserver {
 
     private val activityMainContainer: View
+    private val popupView: View?
+
+    private var countTimesNotified = 0
+    private var lastChange: KeyboardChange? = null
+
+    private val onGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+        handleOnGlobalLayout()
+    }
 
     init {
-
         // Create popup view.
-        this.contentView = FrameLayout(activity).apply {
+        this.popupView = FrameLayout(activity).apply {
 
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -37,6 +46,7 @@ class KeyboardVisibilityMonitor(
             )
 
         }
+        contentView = popupView
 
         // Set soft input mode on the popup instance.
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
@@ -49,30 +59,15 @@ class KeyboardVisibilityMonitor(
         // Resolve activity main container.
         activityMainContainer = activity.findViewById(android.R.id.content)
 
-        // Observe view tree to notify when the keyboard changes.
-        activityMainContainer.viewTreeObserver?.addOnGlobalLayoutListener {
-            if(isShowing){
-                handleOnGlobalLayout()
-            }
-            else{
-                start()
-            }
-        }
-
         // Observe lifecycle to avoid memory leak.
         lifecycleOwner.lifecycle.addObserver(this)
-    }
 
-    /**
-     * Start the KeyboardVisibilityMonitor.
-     * This must be called after the onResume of the Activity.
-     * PopupWindows are not allowed to be registered before the onResume has finished of the Activity.
-     */
-    @OnLifecycleEvent(value = Lifecycle.Event.ON_RESUME)
-    fun start() {
-        if (activityMainContainer.windowToken != null) {
-            setBackgroundDrawable(ColorDrawable(0))
-            showAtLocation(activityMainContainer, Gravity.NO_GRAVITY, 0, 0)
+        // Observe changes
+        lifecycleOwner.lifecycleScope.launchWhenResumed {
+            while (!isShowing && isActive) {
+                showPopup()
+                delay(100)
+            }
         }
     }
 
@@ -82,6 +77,7 @@ class KeyboardVisibilityMonitor(
      */
     @OnLifecycleEvent(value = Lifecycle.Event.ON_DESTROY)
     fun close() {
+        removeLayoutChanges()
         dismiss()
     }
 
@@ -96,7 +92,7 @@ class KeyboardVisibilityMonitor(
         activity.windowManager.defaultDisplay.getSize(screenSize)
 
         val rect = Rect()
-        activityMainContainer.getWindowVisibleDisplayFrame(rect)
+        popupView?.getWindowVisibleDisplayFrame(rect)
 
         // REMIND, you may like to change this using the fullscreen size of the phone
         // and also using the status bar and navigation bar heights of the phone to calculate
@@ -106,15 +102,67 @@ class KeyboardVisibilityMonitor(
 
         when {
             keyboardHeight == 0 -> notifyKeyboardHeightChanged(0)
-            orientation == Configuration.ORIENTATION_PORTRAIT -> notifyKeyboardHeightChanged(keyboardHeight)
+            orientation == Configuration.ORIENTATION_PORTRAIT -> notifyKeyboardHeightChanged(
+                keyboardHeight
+            )
             else -> notifyKeyboardHeightChanged(keyboardHeight)
         }
     }
 
-    private fun notifyKeyboardHeightChanged(height: Int) {
-        onChangeCallback.invoke(KeyboardChange(
-            isOpened = height > 0,
-            currentKeyboardHeight = height
-        ))
+    private fun notifyKeyboardHeightChanged(height: Int) = synchronized(keyboardObservableSettings) {
+
+            // This is the first notification and the user has said he wouldn't like receive the first notification.
+            if (++countTimesNotified <= 2 && !keyboardObservableSettings.notifyWhenScreenHasOpenedAtFirstTime) {
+                return@synchronized
+            }
+
+            // This is the new state of keyboard.
+            val newState = KeyboardChange(
+                isOpened = height > 0,
+                currentKeyboardHeight = height
+            )
+
+            // The state is the same and the user has said the would like to receive only new changes.
+            lastChange?.takeIf { it.isOpened == newState.isOpened }
+                ?.takeIf { keyboardObservableSettings.notifyOnlyWhenStateChange }?.let {
+                return@synchronized
+            }
+
+            // Send new notification to the client.
+            onChangeCallback.invoke(
+                newState.apply {
+                    lastChange = this
+                }
+            )
+        }
+
+    private fun showPopup() = synchronized(isShowing) {
+        if (isShowing)
+            return
+
+        if (activityMainContainer.windowToken == null)
+            return
+
+        setBackgroundDrawable(ColorDrawable(0))
+        showAtLocation(activityMainContainer, Gravity.NO_GRAVITY, 0, 0)
+
+        registerKeyboardChanges()
+    }
+
+    private fun registerKeyboardChanges() {
+        // Remove existent callback
+        removeLayoutChanges()
+
+        // Observe view changes to notify keyboard.
+        popupView?.viewTreeObserver?.addOnGlobalLayoutListener(onGlobalLayoutListener)
+    }
+
+    private fun removeLayoutChanges() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            popupView?.viewTreeObserver?.removeOnGlobalLayoutListener(onGlobalLayoutListener)
+        } else {
+            popupView?.viewTreeObserver?.removeGlobalOnLayoutListener(onGlobalLayoutListener)
+
+        }
     }
 }

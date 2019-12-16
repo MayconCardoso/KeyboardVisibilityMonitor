@@ -4,6 +4,7 @@
     package="com.mctech.library.keyboard.visibility_monitor">
 
     <application tools:ignore="GoogleAppIndexingWarning"
+        android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
         <activity
