@@ -55,7 +55,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-## Kotlin extentions
+Kotlin extentions
+= 
+
 Of course, the code above could be better and without that all boilerplate. Just make sure you have implemented the ```com.mctech.library.keyboard:visibilitymonitor-ktx``` on your ```build.gradle``` dependencies block. For more information about all available extentions [click here](https://github.com/MayconCardoso/KeyboardVisibilityMonitor/tree/master/extentions/src/main/java/com/mctech/library/keyboard/visibilitymonitor/extentions)
 
 ```kotlin
