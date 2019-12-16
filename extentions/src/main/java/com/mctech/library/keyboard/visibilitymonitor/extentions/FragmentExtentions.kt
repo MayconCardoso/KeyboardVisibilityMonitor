@@ -18,3 +18,21 @@ fun Fragment.observeKeyboardChanges(
         onChangeCallback = onKeyBoardChangeBlock
     )
 }
+
+fun Fragment.observeKeyboardWhenOpened(
+    settings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    onKeyBoardChangeBlock: (change: KeyboardChange) -> Unit
+) = observeKeyboardChanges(settings) {
+    if(it.isOpened){
+        onKeyBoardChangeBlock.invoke(it)
+    }
+}
+
+fun Fragment.observeKeyboardWhenClosed(
+    settings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    onKeyBoardChangeBlock: (change: KeyboardChange) -> Unit
+) = observeKeyboardChanges(settings) {
+    if(!it.isOpened){
+        onKeyBoardChangeBlock.invoke(it)
+    }
+}

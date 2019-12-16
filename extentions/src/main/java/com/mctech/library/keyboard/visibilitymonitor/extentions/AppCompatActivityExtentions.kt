@@ -18,3 +18,21 @@ fun AppCompatActivity.observeKeyboardChanges(
         }
     )
 }
+
+fun AppCompatActivity.observeKeyboardWhenOpened(
+    settings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    onKeyBoardChangeBlock: (change: KeyboardChange) -> Unit
+) = observeKeyboardChanges(settings) {
+    if(it.isOpened){
+        onKeyBoardChangeBlock.invoke(it)
+    }
+}
+
+fun AppCompatActivity.observeKeyboardWhenClosed(
+    settings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    onKeyBoardChangeBlock: (change: KeyboardChange) -> Unit
+) = observeKeyboardChanges(settings) {
+    if(!it.isOpened){
+        onKeyBoardChangeBlock.invoke(it)
+    }
+}

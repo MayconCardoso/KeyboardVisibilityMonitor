@@ -36,3 +36,21 @@ fun Context.observeKeyboardChanges(
         onChangeCallback = onKeyBoardChangeBlock
     )
 }
+
+fun Context.observeKeyboardWhenOpened(
+    settings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    onKeyBoardChangeBlock: (change: KeyboardChange) -> Unit
+) = observeKeyboardChanges(settings) {
+    if(it.isOpened){
+        onKeyBoardChangeBlock.invoke(it)
+    }
+}
+
+fun Context.observeKeyboardWhenClosed(
+    settings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    onKeyBoardChangeBlock: (change: KeyboardChange) -> Unit
+) = observeKeyboardChanges(settings) {
+    if(!it.isOpened){
+        onKeyBoardChangeBlock.invoke(it)
+    }
+}
