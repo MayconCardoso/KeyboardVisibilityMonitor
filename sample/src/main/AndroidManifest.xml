@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.mctech.library.keyboard.visibility_monitor">
+
+    <application tools:ignore="GoogleAppIndexingWarning"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+        <activity
+            android:name=".MenuActivity"
+            android:windowSoftInputMode="adjustUnspecified">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".AdjustUnspecifiedActivity"
+            android:windowSoftInputMode="adjustUnspecified"/>
+
+        <activity android:name=".AdjustResizeActivity"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity android:name=".AdjustPanActivity"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <activity android:name=".AdjustNothingActivity"
+            android:windowSoftInputMode="adjustNothing"/>
+
+    </application>
+
+</manifest>

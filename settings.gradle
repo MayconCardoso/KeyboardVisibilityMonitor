@@ -1,0 +1,4 @@
+rootProject.name='KeyboardVisibilityMonitor'
+
+include ':sample', ':extentions'
+include ':library'
