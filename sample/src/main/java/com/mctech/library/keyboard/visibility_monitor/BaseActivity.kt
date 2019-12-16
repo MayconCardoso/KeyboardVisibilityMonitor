@@ -1,30 +1,28 @@
 package com.mctech.library.keyboard.visibility_monitor
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.mctech.library.keyboard.visibilitymonitor.KeyboardObservableSettings
-import com.mctech.library.keyboard.visibilitymonitor.KeyboardVisibilityMonitor
+import com.mctech.library.keyboard.visibilitymonitor.extentions.observeKeyboardChanges
 
 abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_container_edittext)
-    }
 
-    override fun onStart() {
-        super.onStart()
-
-        val keyboardObservableSettings = KeyboardObservableSettings(
+        val settings = KeyboardObservableSettings(
             notifyWhenScreenHasOpenedAtFirstTime = true,
             notifyOnlyWhenStateChange = false
         )
 
-        KeyboardVisibilityMonitor(this, this, keyboardObservableSettings){
-            findViewById<TextView>(R.id.tvStatus).text = "The keyboard is " + if(it.isOpened) "Opened" else "Closed"
-            findViewById<TextView>(R.id.tvSize).text = "Keyboard size: ${it.currentKeyboardHeight}px"
+        val textKeyboardState = findViewById<TextView>(R.id.tvStatus)
+        val textKeyboardSize  = findViewById<TextView>(R.id.tvSize)
+
+        observeKeyboardChanges(settings) {
+            textKeyboardState.text = "The keyboard is " + if(it.isOpened) "opened" else "closed"
+            textKeyboardSize.text  = "Keyboard size: ${it.currentKeyboardHeight}px"
         }
     }
 }

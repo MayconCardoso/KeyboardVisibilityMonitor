@@ -11,7 +11,7 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.PopupWindow
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -21,7 +21,7 @@ import kotlinx.coroutines.isActive
  */
 class KeyboardVisibilityMonitor(
     lifecycleOwner: LifecycleOwner,
-    private val activity: FragmentActivity,
+    private val activity: AppCompatActivity,
     private val keyboardObservableSettings: KeyboardObservableSettings = KeyboardObservableSettings(),
     private val onChangeCallback: (change: KeyboardChange) -> Unit
 ) : PopupWindow(activity), LifecycleObserver {

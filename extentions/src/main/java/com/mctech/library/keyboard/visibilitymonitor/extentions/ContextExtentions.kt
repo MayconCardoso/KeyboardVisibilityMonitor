@@ -3,6 +3,9 @@ package com.mctech.library.keyboard.visibilitymonitor.extentions
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
+import com.mctech.library.keyboard.visibilitymonitor.KeyboardChange
+import com.mctech.library.keyboard.visibilitymonitor.KeyboardObservableSettings
+import com.mctech.library.keyboard.visibilitymonitor.KeyboardVisibilityMonitor
 
 fun Context.findLifeCycleOwner() : LifecycleOwner {
     return when(this){
@@ -20,4 +23,16 @@ fun Context.findActivity() : AppCompatActivity {
         is androidx.appcompat.view.ContextThemeWrapper -> this.baseContext as AppCompatActivity
         else -> throw IllegalArgumentException("The provided context is not a Activity")
     }
+}
+
+fun Context.observeKeyboardChanges(
+    settings: KeyboardObservableSettings = KeyboardObservableSettings(),
+    onKeyBoardChangeBlock: (change: KeyboardChange) -> Unit
+) {
+    KeyboardVisibilityMonitor(
+        lifecycleOwner = this.findLifeCycleOwner(),
+        activity = this.findActivity(),
+        keyboardObservableSettings = settings,
+        onChangeCallback = onKeyBoardChangeBlock
+    )
 }
