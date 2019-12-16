@@ -9,8 +9,8 @@ This library is designed to make it easier to monitor keyboard changes. So, in o
 ```groovy
 // IMPORTANT
 // These libraries are being uploading to Jcenter. If it is not working try again in a few hours.
-implementation com.mctech.library.keyboard:visibilitymonitor
-implementation com.mctech.library.keyboard:visibilitymonitor-ktx
+implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.0'
+implementation 'com.mctech.library.keyboard:visibilitymonitor-ktx:1.0.0'
 ``` 
 
 ## Show me the code :)
@@ -58,7 +58,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 Kotlin extentions
 = 
 
-Of course, the code above could be better and without that all boilerplate. Just make sure you have implemented the ```com.mctech.library.keyboard:visibilitymonitor-ktx``` on your ```build.gradle``` dependencies block. For more information about all available extentions [click here](https://github.com/MayconCardoso/KeyboardVisibilityMonitor/tree/master/extentions/src/main/java/com/mctech/library/keyboard/visibilitymonitor/extentions)
+Of course, the code above could be better and without that all boilerplate. Just make sure you have implemented the ```'com.mctech.library.keyboard:visibilitymonitor-ktx:1.0.0'``` on your ```build.gradle``` dependencies block. For more information about all available extentions [click here](https://github.com/MayconCardoso/KeyboardVisibilityMonitor/tree/master/extentions/src/main/java/com/mctech/library/keyboard/visibilitymonitor/extentions)
 
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
