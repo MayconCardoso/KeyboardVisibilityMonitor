@@ -25,7 +25,7 @@ dependencies {
 
 ext {
     bintrayRepo = 'KeyboardVisibilityMonitor'
-    bintrayName = 'com.mctech.architecture.generator'
+    bintrayName = 'com.mctech.library.keyboard.visibilitymonitor'
 
     publishedGroupId = 'com.mctech.library.keyboard'
     libraryName = 'KeyboardVisibilityMonitor'
@@ -36,7 +36,7 @@ ext {
     siteUrl = 'https://github.com/MayconCardoso/KeyboardVisibilityMonitor'
     gitUrl = 'https://github.com/MayconCardoso/KeyboardVisibilityMonitor.git'
 
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.0.0'
 
     developerId = 'mayconcardoso'
     developerName = 'Maycon Cardoso'
