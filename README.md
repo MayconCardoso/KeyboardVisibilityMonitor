@@ -79,5 +79,20 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
+If you want to observe one specific event changes, use one of these methods below
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    ...
+    observeKeyboardWhenClosed {
+
+    }
+
+    observeKeyboardWhenOpened {
+
+    }
+}
+```
+
 # Thank you
 If this library has helped you, please give me that friendly star :)
