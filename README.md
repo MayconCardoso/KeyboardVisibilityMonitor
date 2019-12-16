@@ -63,7 +63,7 @@ Of course, the code above could be better and without that all boilerplate. Just
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     ...
-    observeKeyboardChanges {
+    observeKeyboardChanges { change ->
         // Your code here
     }
     
@@ -73,7 +73,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
         notifyOnlyWhenStateChange = true
     )
 
-    observeKeyboardChanges(settings) { 
+    observeKeyboardChanges(settings) { change ->
         // Your code here
     }
 }
