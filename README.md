@@ -78,3 +78,6 @@ override fun onCreate(savedInstanceState: Bundle?) {
     }
 }
 ```
+
+# Thank you
+If this library has helped you, please give me that friendly star :)
