@@ -12,7 +12,7 @@ fun Fragment.observeKeyboardChanges(
     val context = this.context ?: throw RuntimeException("The provided context cannot be null.")
 
     KeyboardVisibilityMonitor(
-        lifecycleOwner = context.findLifeCycleOwner(),
+        lifecycleOwner = this,
         activity = context.findActivity(),
         keyboardObservableSettings = settings,
         onChangeCallback = onKeyBoardChangeBlock
