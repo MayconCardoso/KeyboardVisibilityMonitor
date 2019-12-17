@@ -7,10 +7,8 @@ This library is designed to make it easier to monitor keyboard changes. So, in o
 
 ## Download
 ```groovy
-// IMPORTANT
-// These libraries are being uploading to Jcenter. If it is not working try again in a few hours.
-implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.0'
-implementation 'com.mctech.library.keyboard:visibilitymonitor-ktx:1.0.0'
+implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.1'
+implementation 'com.mctech.library.keyboard:visibilitymonitor-ktx:1.0.1'
 ``` 
 
 ## Show me the code :)
