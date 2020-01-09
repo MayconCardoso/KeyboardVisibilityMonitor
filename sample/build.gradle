@@ -27,8 +27,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-
-
-    implementation project(path: ':library')
-    implementation project(path: ':extentions')
+    implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.6'
+    implementation 'com.mctech.library.keyboard:visibilitymonitor-ktx:1.0.6'
 }

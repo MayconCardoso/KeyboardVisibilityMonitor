@@ -1,6 +1,7 @@
 package com.mctech.library.keyboard.visibilitymonitor
 
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.DisplayMetrics
@@ -30,6 +31,7 @@ class KeyboardVisibilityMonitor(
 
     private var countTimesNotified = 0
     private var lastChange: KeyboardChange? = null
+    private var shouldConsiderActionBarSize = false
 
     private val onGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
         handleOnGlobalLayout()
@@ -89,9 +91,18 @@ class KeyboardVisibilityMonitor(
         val displayMetrics = DisplayMetrics()
         activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        val deviceHeight = displayMetrics.heightPixels
+        val rect = Rect()
+        popupView?.getWindowVisibleDisplayFrame(rect)
 
-        val keyboardHeight = deviceHeight - getStatusBarHeight(activity)
+        val keyboardHeight =
+            if(rect.bottom > displayMetrics.heightPixels || rect.bottom == displayMetrics.heightPixels)
+                0
+            else
+                displayMetrics.heightPixels - rect.bottom + getStatusBarHeight(activity)
+
+        if(keyboardHeight == 0){
+            shouldConsiderActionBarSize = rect.bottom > displayMetrics.heightPixels
+        }
 
         when (keyboardHeight) {
             0 -> notifyKeyboardHeightChanged(0)
@@ -100,6 +111,8 @@ class KeyboardVisibilityMonitor(
     }
 
     private fun getStatusBarHeight(context: Context): Int {
+        if(!shouldConsiderActionBarSize) return 0
+
         var result = 0
         val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
@@ -108,8 +121,8 @@ class KeyboardVisibilityMonitor(
         return result
     }
 
-    private fun notifyKeyboardHeightChanged(height: Int) = synchronized(keyboardObservableSettings) {
-
+    private fun notifyKeyboardHeightChanged(height: Int) =
+        synchronized(keyboardObservableSettings) {
             // This is the first notification and the user has said he wouldn't like receive the first notification.
             if (++countTimesNotified <= 2 && !keyboardObservableSettings.notifyWhenScreenHasOpenedAtFirstTime) {
                 return@synchronized
@@ -118,14 +131,14 @@ class KeyboardVisibilityMonitor(
             // This is the new state of keyboard.
             val newState = KeyboardChange(
                 isOpened = height > 0,
-                currentKeyboardHeight = height
+                currentKeyboardHeight = if(height > 0) height else 0
             )
 
             // The state is the same and the user has said the would like to receive only new changes.
             lastChange?.takeIf { it.isOpened == newState.isOpened }
                 ?.takeIf { keyboardObservableSettings.notifyOnlyWhenStateChange }?.let {
-                return@synchronized
-            }
+                    return@synchronized
+                }
 
             // Send new notification to the client.
             onChangeCallback.invoke(

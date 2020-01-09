@@ -7,8 +7,8 @@ This library is designed to make it easier to monitor keyboard changes. So, in o
 
 ## Download
 ```groovy
-implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.1'
-implementation 'com.mctech.library.keyboard:visibilitymonitor-ktx:1.0.1'
+implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.6'
+implementation 'com.mctech.library.keyboard:visibilitymonitor-ktx:1.0.6'
 ``` 
 
 ## Show me the code :)
