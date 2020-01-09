@@ -17,7 +17,7 @@ buildscript {
 }
 
 dependencies {
-    implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.1'
+    implementation 'com.mctech.library.keyboard:visibilitymonitor:1.0.2'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -37,7 +37,7 @@ ext {
     siteUrl = 'https://github.com/MayconCardoso/KeyboardVisibilityMonitor'
     gitUrl = 'https://github.com/MayconCardoso/KeyboardVisibilityMonitor.git'
 
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.0.2'
 
     developerId = 'mayconcardoso'
     developerName = 'Maycon Cardoso'
