@@ -1,10 +1,9 @@
 package com.mctech.library.keyboard.visibilitymonitor
 
-import android.content.res.Configuration
-import android.graphics.Point
-import android.graphics.Rect
+import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
@@ -87,26 +86,26 @@ class KeyboardVisibilityMonitor(
      * from the activity window height.
      */
     private fun handleOnGlobalLayout() {
+        val displayMetrics = DisplayMetrics()
+        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        val screenSize = Point()
-        activity.windowManager.defaultDisplay.getSize(screenSize)
+        val deviceHeight = displayMetrics.heightPixels
 
-        val rect = Rect()
-        popupView?.getWindowVisibleDisplayFrame(rect)
+        val keyboardHeight = deviceHeight - getStatusBarHeight(activity)
 
-        // REMIND, you may like to change this using the fullscreen size of the phone
-        // and also using the status bar and navigation bar heights of the phone to calculate
-        // the keyboard height. But this worked fine on a Nexus.
-        val orientation = activity.resources.configuration.orientation
-        val keyboardHeight = screenSize.y - rect.bottom
-
-        when {
-            keyboardHeight == 0 -> notifyKeyboardHeightChanged(0)
-            orientation == Configuration.ORIENTATION_PORTRAIT -> notifyKeyboardHeightChanged(
-                keyboardHeight
-            )
+        when (keyboardHeight) {
+            0 -> notifyKeyboardHeightChanged(0)
             else -> notifyKeyboardHeightChanged(keyboardHeight)
         }
+    }
+
+    private fun getStatusBarHeight(context: Context): Int {
+        var result = 0
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimensionPixelSize(resourceId)
+        }
+        return result
     }
 
     private fun notifyKeyboardHeightChanged(height: Int) = synchronized(keyboardObservableSettings) {
